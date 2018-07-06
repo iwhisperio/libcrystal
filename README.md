@@ -1,0 +1,2 @@
+# libcrystal
+Miscellaneous library implementation.
