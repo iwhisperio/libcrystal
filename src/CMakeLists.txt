@@ -113,10 +113,6 @@ elseif("${CMAKE_SYSTEM_NAME}" STREQUAL "Windows")
   set(SYSTEM_LIBS Ws2_32 Winmm pthread)
 endif()
 
-if("${CMAKE_C_COMPILER_ID}" STREQUAL "GNU" OR "${CMAKE_C_COMPILER_ID}" STREQUAL "Clang")
-  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC -fvisibility=hidden")
-endif()
-
 if(${ENABLE_STATIC})
   add_library(crystal-static STATIC ${SRC})
   target_compile_definitions(crystal-static PRIVATE CRYSTAL_STATIC)

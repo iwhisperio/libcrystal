@@ -3,6 +3,8 @@ cmake_policy(VERSION 2.9)
 project(libcrystal C)
 cmake_policy(SET CMP0054 NEW)
 
+# set(CMAKE_VERBOSE_MAKEFILE TRUE)
+
 if("${CMAKE_SYSTEM_NAME}" STREQUAL "Windows")
   set(ENABLE_SHARED_DEFAULT TRUE)
   set(ENABLE_STATIC_DEFAULT FALSE)
