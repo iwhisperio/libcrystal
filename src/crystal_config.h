@@ -53,4 +53,8 @@
 typedef ptrdiff_t       ssize_t;
 #endif
 
+#ifndef static_assert
+#define static_assert(exp, str)
+#endif
+
 #endif /* __CRYSTAL_CONFIG_H__ */
