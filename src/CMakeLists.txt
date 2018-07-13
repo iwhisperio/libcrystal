@@ -68,7 +68,7 @@ if(${ENABLE_CRYPTO})
     find_library(SODIUM NAMES sodium libsodium HINTS "${WITH_LIBSODIUM}/lib")
     include_directories("${WITH_LIBSODIUM}/include")
   else()
-    find_library(SODIUM NAMES sodium libsodium flatcc)
+    find_library(SODIUM NAMES sodium libsodium)
   endif()
 
   message(STATUS "Found libsodium: ${SODIUM}")
@@ -84,11 +84,14 @@ endif()
 if("${CMAKE_SYSTEM_NAME}" STREQUAL "Windows")
   set(SRC
       ${SRC}
-      windows/gettimeofday.c)
+      windows/gettimeofday.c
+      windows/getopt_long.c)
 
   set(HEADERS
       ${HEADERS}
       windows/gettimeofday.h
+      windows/getopt.h
+      windows/posix_helper.h
       windows/builtins.h)
 
   add_definitions(-D_CRT_SECURE_NO_WARNINGS)
