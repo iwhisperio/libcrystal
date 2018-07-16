@@ -464,7 +464,3 @@ int socket_errno(void)
     return errno;
 #endif
 }
-
-#ifdef _MSC_VER
-#pragma warning(default: 4267)
-#endif
