@@ -53,6 +53,7 @@
 typedef ptrdiff_t       ssize_t;
 #endif
 
+#include <assert.h>
 #ifndef static_assert
 #define static_assert(exp, str)
 #endif
