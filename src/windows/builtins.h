@@ -127,9 +127,52 @@ int __builtin_clzl(unsigned long mask)
 }
 
 static __inline
-int __builtin_clz(unsigned int x)
+int __builtin_clz(unsigned int mask)
 {
-    return __builtin_clzl(x);
+    // Win32 and Win64 expectations.
+    static_assert(sizeof(mask)==4,"");
+    static_assert(sizeof(unsigned long)==4,"");
+    return __builtin_clzl(mask);
+}
+
+static __inline
+int __builtin_ffsll(long long mask)
+{
+    unsigned long where;
+    // Search from LSB to MSB for first set bit.
+    // Returns zero if no set bit is found.
+#if defined(_WIN64)
+    if (BitScanForward64(&where, (unsigned __int64)mask))
+        return (int)(where + 1);
+#elif defined(_WIN32)
+    // Win32 doesn't have _BitScanForward64 so emulate it with two 32 bit calls.
+    // Scan the Low Word
+    if (BitScanForward(&where, (unsigned long)((unsigned __int64)mask)))
+        return (int)(where + 1);
+    // Scan the High Word
+    if (BitScanForward(&where, (unsigned long)(mask >> 32)))
+        return (int)(where + 33); // Create a bit offset from the LSB.
+#endif
+    return 0;
+}
+
+static __inline
+int __builtin_ffsl(long mask)
+{
+    unsigned long where;
+    // Search from LSB to MSB for first set bit.
+    // Returns zero if no set bit is found.
+    if (BitScanForward(&where, (unsigned long)mask))
+        return (int)(where + 1);
+    return 0;
+}
+
+static __inline
+int __builtin_ffs(int mask)
+{
+    static_assert(sizeof(mask)==4,"");
+    static_assert(sizeof(unsigned long)==4,"");
+    return __builtin_ffsl((long)(mask));
 }
 
 static __inline

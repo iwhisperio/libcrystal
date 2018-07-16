@@ -43,8 +43,12 @@
 #include <ws2tcpip.h>
 #endif /* WIN32 */
 
-
 #include "socket.h"
+
+#ifdef _MSC_VER
+// For Windows socket API not compatible with POSIX: size_t vs. int
+#pragma warning(disable: 4267)
+#endif
 
 SOCKET socket_create(int type, const char *host, const char *port)
 {
@@ -460,3 +464,7 @@ int socket_errno(void)
     return errno;
 #endif
 }
+
+#ifdef _MSC_VER
+#pragma warning(default: 4267)
+#endif

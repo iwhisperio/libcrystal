@@ -53,14 +53,14 @@ char *base58_encode(const void *data, size_t len, char *text, size_t *textlen)
     ssize_t i, j, high, zcount = 0;
     size_t size;
 
-    while (zcount < len && !bin[zcount])
+    while (zcount < (ssize_t)len && !bin[zcount])
         ++zcount;
 
     size = (len - zcount) * 138 / 100 + 1;
     uint8_t *buf = (uint8_t *)alloca(size * sizeof(uint8_t));
     memset(buf, 0, size);
 
-    for (i = zcount, high = size - 1; i < len; ++i, high = j) {
+    for (i = zcount, high = size - 1; i < (ssize_t)len; ++i, high = j) {
         for (carry = bin[i], j = size - 1; (j > high) || carry; --j) {
             carry += 256 * buf[j];
             buf[j] = carry % 58;
@@ -68,7 +68,7 @@ char *base58_encode(const void *data, size_t len, char *text, size_t *textlen)
         }
     }
 
-    for (j = 0; j < size && !buf[j]; ++j);
+    for (j = 0; j < (ssize_t)size && !buf[j]; ++j);
 
     if (*textlen <= zcount + size - j) {
         *textlen = zcount + size - j + 1;
@@ -77,7 +77,7 @@ char *base58_encode(const void *data, size_t len, char *text, size_t *textlen)
 
     if (zcount)
         memset(text, '1', zcount);
-    for (i = zcount; j < size; ++i, ++j)
+    for (i = zcount; j < (ssize_t)size; ++i, ++j)
         text[i] = b58digits_ordered[buf[j]];
     text[i] = '\0';
     *textlen = i + 1;

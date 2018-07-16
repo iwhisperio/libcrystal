@@ -109,7 +109,7 @@ static inline int bitset_isset(bitset_t *set, int bit)
     index = bit >> 6;
     offset = bit % 64;
 
-    return (set->bits[index] & (1 << offset)) != 0;
+    return (set->bits[index] & ((uint64_t)1 << offset)) != 0;
 }
 
 static inline int bitset_isset2(const uint64_t *bits, int bit)
@@ -124,7 +124,7 @@ static inline int bitset_isset2(const uint64_t *bits, int bit)
     index = bit >> 6;
     offset = bit % 64;
 
-    return (bits[index] & (1 << offset)) != 0;
+    return (bits[index] & ((uint64_t)1 << offset)) != 0;
 }
 
 static inline int bitset_compare(bitset_t *set1, bitset_t *set2, size_t len)

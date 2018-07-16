@@ -1,6 +1,7 @@
 #ifndef __POSIX_HELPER__
 #define __POSIX_HELPER__
 
+#include <stdlib.h>
 #include <stdint.h>
 #include <windows.h>
 #include <gettimeofday.h>
@@ -25,19 +26,19 @@ typedef long int        suseconds_t;
 #define PATH_MAX       MAX_PATH
 
 #define mkdir(dir, mode)        _mkdir(dir)
+
+#undef strcasecmp
 #define strcasecmp(s1, s2)      _stricmp(s1, s2)
+
+#undef strncasecmp
 #define strncasecmp(s1, s2, n)  _strnicmp(s1, s2, n)
 
 #define usleep(s)               Sleep((DWORD)(((s) + 500) / 1000))
 #define sleep(s)                Sleep((DWORD)((s) * 1000))
 
-# define timerisset(tvp)        ((tvp)->tv_sec || (tvp)->tv_usec)
-# define timerclear(tvp)        ((tvp)->tv_sec = (tvp)->tv_usec = 0)
-# define timercmp(a, b, CMP)                                                  \
-  (((a)->tv_sec == (b)->tv_sec) ?                                             \
-   ((a)->tv_usec CMP (b)->tv_usec) :                                          \
-   ((a)->tv_sec CMP (b)->tv_sec))
-# define timeradd(a, b, result)                                               \
+#define timerisset(tvp)        ((tvp)->tv_sec || (tvp)->tv_usec)
+
+#define timeradd(a, b, result)                                                \
   do {                                                                        \
     (result)->tv_sec = (a)->tv_sec + (b)->tv_sec;                             \
     (result)->tv_usec = (a)->tv_usec + (b)->tv_usec;                          \
@@ -47,7 +48,8 @@ typedef long int        suseconds_t;
         (result)->tv_usec -= 1000000;                                         \
       }                                                                       \
   } while (0)
-# define timersub(a, b, result)                                               \
+
+#define timersub(a, b, result)                                                \
   do {                                                                        \
     (result)->tv_sec = (a)->tv_sec - (b)->tv_sec;                             \
     (result)->tv_usec = (a)->tv_usec - (b)->tv_usec;                          \
@@ -56,6 +58,12 @@ typedef long int        suseconds_t;
       (result)->tv_usec += 1000000;                                           \
     }                                                                         \
   } while (0)
+
+static __inline
+char *realpath(const char *path, char *resolved_path)
+{
+   return _fullpath(resolved_path, path, _MAX_PATH);
+}
 
 #ifdef __cplusplus
 }
