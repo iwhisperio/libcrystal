@@ -38,37 +38,6 @@ extern "C" {
 #define VLOG_TRACE      6
 #define VLOG_VERBOSE    7
 
-#if defined(__ANDROID__)
-
-#include <android/log.h>
-#define LOG_TAG "wmcore"
-
-#define vlogF(format, args...) \
-    __android_log_print(ANDROID_LOG_FATAL, LOG_TAG, format, ##args)
-
-#define vlogE(format, args...) \
-    __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, format, ##args)
-
-#define vlogW(format, args...) \
-    __android_log_print(ANDROID_LOG_WARN, LOG_TAG, format, ##args)
-
-#define vlogI(format, args...) \
-    __android_log_print(ANDROID_LOG_INFO, LOG_TAG, format, ##args)
-
-#define vlogD(format, args...) \
-    __android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, format, ##args)
-
-#define vlogT(format, args...) \
-    __android_log_print(ANDROID_LOG_VERBOSE, LOG_TAG, format, ##args)
-
-#define vlogV(format, args...) \
-    __android_log_print(ANDROID_LOG_VERBOSE, LOG_TAG, format, ##args)
-
-#define vlog(level, format, args...) \
-    __android_log_print(level, LOG_TAG, format, ##args)
-
-#else
-
 #include <stdarg.h>
 
 CRYSTAL_API
@@ -129,8 +98,6 @@ void vlog(int level, const char *format, ...);
 
 CRYSTAL_API
 void vlogv(int level, const char *format, va_list args);
-
-#endif
 
 #ifdef __cplusplus
 }

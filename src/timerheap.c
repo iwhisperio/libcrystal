@@ -28,6 +28,7 @@
 #include <limits.h>
 #include <stdint.h>
 #include <pthread.h>
+#include <time.h>
 
 #ifdef HAVE_SYS_TIME_H
 #include <sys/time.h>
@@ -37,7 +38,8 @@
 #include "gettimeofday.h"
 #endif
 
-#include <vlog.h>
+#include "vlog.h"
+#include "socket.h"
 #include "time_util.h"
 #include "timerheap.h"
 

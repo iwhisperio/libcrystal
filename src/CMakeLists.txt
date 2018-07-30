@@ -120,6 +120,10 @@ elseif(WIN32)
     set(SYSTEM_LIBS Ws2_32 Winmm pthread)
 endif()
 
+if(ANDROID)
+    list(APPEND SYSTEM_LIBS log)
+endif()
+
 if(ENABLE_STATIC)
     add_library(crystal-static STATIC ${SRC})
     target_compile_definitions(crystal-static PRIVATE CRYSTAL_STATIC)

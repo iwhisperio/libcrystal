@@ -26,12 +26,44 @@
 #include <stdarg.h>
 #include <pthread.h>
 
-#if !defined(__ANDROID__)
 #include "vlog.h"
 
-#define TIME_FORMAT     "%Y-%m-%d %H:%M:%S"
-
 int log_level = VLOG_INFO;
+
+#if defined(__ANDROID__)
+#include <android/log.h>
+#define LOG_TAG "whisper"
+
+static int android_log_levels[] = {
+    ANDROID_LOG_SILENT,     // VLOG_NONE
+    ANDROID_LOG_FATAL,      // VLOG_FATAL
+    ANDROID_LOG_ERROR,      // VLOG_ERROR
+    ANDROID_LOG_WARN,       // VLOG_WARN
+    ANDROID_LOG_INFO,       // VLOG_INFO
+    ANDROID_LOG_DEBUG,      // VLOG_DEBUG
+    ANDROID_LOG_VERBOSE,    // VLOG_TRACE
+    ANDROID_LOG_VERBOSE     // VLOG_VERBOSE
+};
+
+void vlog_init(int level, const char *logfile, log_printer *printer) {}
+void vlog_set_level(int level) {}
+
+void vlog(int level, const char *format, ...)
+{
+    va_list args;
+    va_start(args, format);
+    __android_log_print(android_log_levels[level], LOG_TAG, format, args);
+    va_end(args);
+}
+
+void vlogv(int level, const char *format, va_list args)
+{
+    __android_log_print(android_log_levels[level], LOG_TAG, format, args);
+}
+
+#else /* defined(__ANDROID__) */
+
+#define TIME_FORMAT     "%Y-%m-%d %H:%M:%S"
 
 static const char* level_names[] = {
     "-",
@@ -83,7 +115,7 @@ static void reset_color()
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-function"
 
-#endif
+#endif /* __APPLE__ */
 
 static void set_color(int level)
 {
@@ -115,13 +147,13 @@ static void reset_color(void)
 #define set_color(c)  ((void)0)
 #define reset_color() ((void)0)
 
-#endif
+#endif /* TARGET_OS_IOS */
 
 #pragma GCC diagnostic pop
 
-#endif
+#endif /* __APPLE__ */
 
-#endif
+#endif /* defined(_WIN32) || defined(_WIN64) */
 
 static log_printer *__printer;
 static FILE *__logfile;
@@ -200,17 +232,15 @@ void vlog(int level, const char *format, ...)
     vlogv(level, format, args);
     va_end(args);
 }
-#endif
 
 void vlog_set_level(int level)
 {
-#if !defined(__ANDROID__)
     if (level > VLOG_VERBOSE)
         level = VLOG_VERBOSE;
     else if (level < VLOG_NONE)
         level = VLOG_NONE;
 
     log_level = level;
-#endif
 }
 
+#endif  /* defined(__ANDROID__) */
