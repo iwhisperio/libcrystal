@@ -23,16 +23,16 @@
 #ifndef __SOCKET_H__
 #define __SOCKET_H__
 
-#if !defined(_WIN32) && !defined(_WIN64)
+#if defined(_WIN32) || defined(_WIN64)
+#include <winsock2.h>
+#include <ws2tcpip.h>
+#else
 #include <inttypes.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <netdb.h>
-#else
-#include <winsock2.h>
-#include <ws2tcpip.h>
-#endif /* WIN32 */
+#endif /* defined(_WIN32) || defined(_WIN64) */
 
 #include <crystal_config.h>
 

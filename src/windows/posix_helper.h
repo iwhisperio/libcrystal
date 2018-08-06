@@ -3,6 +3,7 @@
 
 #include <stdlib.h>
 #include <stdint.h>
+#include <direct.h>
 #include <windows.h>
 #include <gettimeofday.h>
 
