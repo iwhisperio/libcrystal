@@ -24,9 +24,16 @@ typedef long int        suseconds_t;
 #define S_IRUSR         _S_IREAD
 #define S_IWUSR         _S_IWRITE
 
+#define F_OK            ((int)00)
+#define W_OK            ((int)02)
+#define R_OK            ((int)04)
+#define X_OK            R_OK
+
 #define PATH_MAX       MAX_PATH
 
 #define mkdir(dir, mode)        _mkdir(dir)
+
+#define fsync(fd)               _commit(fd)
 
 #undef strcasecmp
 #define strcasecmp(s1, s2)      _stricmp(s1, s2)
