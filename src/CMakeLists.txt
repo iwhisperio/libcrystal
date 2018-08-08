@@ -38,7 +38,8 @@ set(SRC
     vlog.c
     timerheap.c
     time_util.c
-    socket.c)
+    socket.c
+    spopen.c)
 
 set(HEADERS
     base58.h
@@ -51,6 +52,7 @@ set(HEADERS
     timerheap.h
     time_util.h
     socket.h
+    spopen.h
     crystal_config.h)
 
 include_directories(.)
