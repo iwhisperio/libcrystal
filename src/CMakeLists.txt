@@ -118,6 +118,11 @@ endif()
 
 if(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
     set(SYSTEM_LIBS pthread m)
+
+    ## if raspiberryPi
+    if(${CMAKE_SYSTEM_PROCESSOR} STREQUAL "arm")
+        list(APPEND SYSTEM_LIBS rt)
+    endif()
 elseif(WIN32)
     set(SYSTEM_LIBS Ws2_32 Winmm pthread)
 endif()
