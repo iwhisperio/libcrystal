@@ -327,7 +327,7 @@ int socket_addr_from_name(const char *host, const char *port, int type,
 
     for (p = ai; p; p = p->ai_next) {
         if (p->ai_family == AF_INET) {
-            if (p->ai_addrlen > *socklen)
+            if (p->ai_addrlen > (size_t)*socklen)
                 continue;
 
             memcpy(addr, p->ai_addr, p->ai_addrlen);

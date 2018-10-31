@@ -37,7 +37,7 @@ int bitset_prev_set_bit(bitset_t *set, int from)
     uint64_t word_mask = 0xffffffffffffffff;
 
     assert(set);
-    assert(from >= 0 && from < set->size);
+    assert(from >= 0 && from < (int)set->size);
 
     index = from >> 6;
     word = set->bits[index] & (word_mask >> (-(from + 1) % 64 + 64));
@@ -61,7 +61,7 @@ int bitset_next_set_bit(bitset_t *set, int from)
     uint64_t word_mask = 0xffffffffffffffff;
 
     assert(set);
-    assert(from >= 0 && from < set->size);
+    assert(from >= 0 && from < (int)set->size);
 
     index = from >> 6;
     word = set->bits[index] & (word_mask << from);
@@ -85,7 +85,7 @@ int bitset_prev_clear_bit(bitset_t *set, int from)
     uint64_t word_mask = 0xffffffffffffffff;
 
     assert(set);
-    assert(from >= 0 && from < set->size);
+    assert(from >= 0 && from < (int)set->size);
 
     index = from >> 6;
     word = ~set->bits[index] & (word_mask >> (-(from + 1) % 64 + 64));
@@ -109,7 +109,7 @@ int bitset_next_clear_bit(bitset_t *set, int from)
     uint64_t word_mask = 0xffffffffffffffff;
 
     assert(set);
-    assert(from >= 0 && from < set->size);
+    assert(from >= 0 && from < (int)set->size);
 
     index = from >> 6;
     word = ~set->bits[index] & (word_mask << (from % 64));

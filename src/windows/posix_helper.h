@@ -35,6 +35,8 @@ typedef long int        suseconds_t;
 
 #define fsync(fd)               _commit(fd)
 
+#define fdopen(fd, mode)        _fdopen(fd, mode)
+
 #undef strcasecmp
 #define strcasecmp(s1, s2)      _stricmp(s1, s2)
 

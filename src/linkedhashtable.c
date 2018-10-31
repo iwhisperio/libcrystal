@@ -71,7 +71,7 @@ struct _hashtable_t {
 static uint32_t default_hash_code(const void *key, size_t keylen)
 {
     uint32_t h = 0;
-    int i;
+    size_t i;
 
     for (i = 0; i < keylen; i++)
         h = 31 * h + ((const char *)key)[i];
