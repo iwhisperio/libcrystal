@@ -71,7 +71,7 @@ static inline int bitset_set(bitset_t *set, int bit)
 
     assert(set);
 
-    if (bit < 0 || bit >= set->size)
+    if (bit < 0 || bit >= (int)set->size)
         return -1;
 
     index = bit >> 6;
@@ -87,7 +87,7 @@ static inline int bitset_clear(bitset_t *set, int bit)
 
     assert(set);
 
-    if (bit < 0 || bit >= set->size)
+    if (bit < 0 || bit >= (int)set->size)
         return -1;
 
     index = bit >> 6;
@@ -103,7 +103,7 @@ static inline int bitset_isset(bitset_t *set, int bit)
 
     assert(set);
 
-    if (bit < 0 || bit >= set->size)
+    if (bit < 0 || bit >= (int)set->size)
         return -1;
 
     index = bit >> 6;
