@@ -32,7 +32,7 @@ int log_level = VLOG_INFO;
 
 #if defined(__ANDROID__)
 #include <android/log.h>
-#define LOG_TAG "whisper"
+#define LOG_TAG "droid"
 
 static int android_log_levels[] = {
     ANDROID_LOG_SILENT,     // VLOG_NONE
@@ -188,9 +188,9 @@ void output(int level, const char *format, ...)
     if (__printer)
         __printer(format, args);
     else {
-        set_color(level);
+        //set_color(level);
         vfprintf(stderr, format, args);
-        reset_color();
+        //reset_color();
     }
     va_end(args);
 
