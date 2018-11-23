@@ -52,13 +52,13 @@ void vlog(int level, const char *format, ...)
 {
     va_list args;
     va_start(args, format);
-    __android_log_print(android_log_levels[level], LOG_TAG, format, args);
+    __android_log_vprint(android_log_levels[level], LOG_TAG, format, args);
     va_end(args);
 }
 
 void vlogv(int level, const char *format, va_list args)
 {
-    __android_log_print(android_log_levels[level], LOG_TAG, format, args);
+    __android_log_vprint(android_log_levels[level], LOG_TAG, format, args);
 }
 
 #else /* defined(__ANDROID__) */
