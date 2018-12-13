@@ -3,6 +3,7 @@
 
 #include <stdlib.h>
 #include <stdint.h>
+#include <string.h>
 #include <direct.h>
 #include <windows.h>
 #include <gettimeofday.h>
@@ -73,6 +74,13 @@ static __inline
 char *realpath(const char *path, char *resolved_path)
 {
    return _fullpath(resolved_path, path, _MAX_PATH);
+}
+
+static __inline
+char *basename(const char *path)
+{
+    char *p =  strrchr(path, '\\');
+    return p ?  p + 1 : (char *)path;
 }
 
 #ifdef __cplusplus
