@@ -146,6 +146,26 @@ int list_insert(list_t *lst, int index, list_entry_t *entry)
     return 1;
 }
 
+static void *list_remove_entry_nolock(list_t *lst, list_entry_t *entry)
+{
+    void *val;
+    list_entry_i *ent = (list_entry_i *)entry;
+
+    assert(lst && ent && ent->data && ent->next && ent->prev);
+
+    val = ent->data;
+
+    ent->next->prev = ent->prev;
+    ent->prev->next = ent->next;
+    ent->prev = NULL;
+    ent->next = NULL;
+
+    lst->size--;
+    lst->mod_count++;
+
+    return val;
+}
+
 void *list_remove_entry(list_t *lst, list_entry_t *entry)
 {
     void *val;
@@ -160,15 +180,7 @@ void *list_remove_entry(list_t *lst, list_entry_t *entry)
 
     list_wlock(lst);
 
-    val = ent->data;
-
-    ent->next->prev = ent->prev;
-    ent->prev->next = ent->next;
-    ent->prev = NULL;
-    ent->next = NULL;
-
-    lst->size--;
-    lst->mod_count++;
+    val = list_remove_entry_nolock(lst, entry);
 
     // deref(val);
     // Pass reference to caller
@@ -428,19 +440,24 @@ int list_iterator_remove(list_iterator_t *iterator)
         return -1;
     }
 
+    list_wlock(it->lst);
+
     if (it->expected_mod_count != it->lst->mod_count) {
         errno = EAGAIN;
+        list_unlock(it->lst);
         return -1;
     }
 
-    ptr = list_remove_entry(it->lst, (list_entry_t *)it->current);
+    ptr = list_remove_entry_nolock(it->lst, (list_entry_t *)it->current);
     if (ptr) {
         deref(ptr);
         it->current = NULL;
         it->expected_mod_count++;
+        list_unlock(it->lst);
         return 1;
     }
 
+    list_unlock(it->lst);
     return 0;
 }
 
