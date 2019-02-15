@@ -30,6 +30,10 @@
 #include "rc_mem.h"
 #include "linkedhashtable.h"
 
+#ifdef _MSC_VER
+#include "builtins.h"
+#endif
+
 typedef struct _hash_entry_i
 {
     const void *         key;
@@ -90,6 +94,21 @@ static int default_key_compare(const void *key1, size_t len1,
 
 static void hashtable_destroy(void *htab);
 
+static int BUCKET_SIZES[] = {
+    7,      7,      7,      17,     31,     67,     127,    257,
+    509,    1021,   2053,   4093,   8191,   16381,  32771,  65521
+};
+
+static size_t bucket_size(size_t capacity)
+{
+    int msb = (sizeof(unsigned long long) << 3) - __builtin_clzll(capacity) - 1;
+
+    if (msb > 15)
+        msb = 15;
+
+    return BUCKET_SIZES[msb];
+}
+
 hashtable_t *hashtable_create(size_t capacity, int synced,
           uint32_t (*hash_code)(const void *key, size_t len),
           int (*key_compare)(const void *key1, size_t len1,
@@ -97,8 +116,7 @@ hashtable_t *hashtable_create(size_t capacity, int synced,
 {
     hashtable_t *htab;
 
-    if (!capacity)
-        capacity = 128;
+    capacity = bucket_size(capacity ? capacity : 127);
 
     htab = (hashtable_t *)rc_zalloc(sizeof(hashtable_t)
                 + sizeof(hash_entry_i *) * capacity, hashtable_destroy);
