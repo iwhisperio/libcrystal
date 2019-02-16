@@ -361,19 +361,11 @@ int hashtable_is_empty(hashtable_t *htab)
     return htab->count == 0;
 }
 
-void *hashtable_remove(hashtable_t *htab, const void *key, size_t keylen)
+static void *hashtable_remove_nolock(hashtable_t *htab, const void *key, size_t keylen)
 {
     hash_entry_i **entry;
     hash_entry_i *to_remove;
     void *val = NULL;
-
-    assert(htab && key && keylen);
-    if (!htab || !key || !keylen) {
-        errno = EINVAL;
-        return NULL;
-    }
-
-    hashtable_wlock(htab);
 
     entry = hashtable_get_entry(htab, key, keylen);
     if (entry) {
@@ -392,6 +384,21 @@ void *hashtable_remove(hashtable_t *htab, const void *key, size_t keylen)
         htab->mod_count++;
     }
 
+    return val;
+}
+
+void *hashtable_remove(hashtable_t *htab, const void *key, size_t keylen)
+{
+    void *val = NULL;
+
+    assert(htab && key && keylen);
+    if (!htab || !key || !keylen) {
+        errno = EINVAL;
+        return NULL;
+    }
+
+    hashtable_wlock(htab);
+    val = hashtable_remove_nolock(htab, key, keylen);
     hashtable_unlock(htab);
 
     return val;
@@ -500,18 +507,23 @@ int hashtable_iterator_remove(hashtable_iterator_t *iterator)
         return -1;
     }
 
+    hashtable_wlock(it->htab);
+
     if (it->expected_mod_count != it->htab->mod_count) {
         errno = EAGAIN;
+        hashtable_unlock(it->htab);
         return -1;
     }
 
-    ptr = hashtable_remove(it->htab, it->current->key, it->current->keylen);
+    ptr = hashtable_remove_nolock(it->htab, it->current->key, it->current->keylen);
     if (ptr) {
         deref(ptr);
         it->current = NULL;
         it->expected_mod_count++;
+        hashtable_unlock(it->htab);
         return 1;
     }
 
+    hashtable_unlock(it->htab);
     return 0;
 }
