@@ -67,7 +67,7 @@ if(ENABLE_CRYPTO)
         ${HEADERS}
         ../include/crystal/crypto.h)
 
-    set(INCLUDE_CRYPTO_H_STRING [=[#include "crystal/crypto.h"]=])
+    set(INCLUDE_CRYPTO_H_STRING [=[#include <crystal/crypto.h>]=])
 
     if(NOT "${WITH_LIBSODIUM}" STREQUAL "")
         find_library(SODIUM
