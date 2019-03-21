@@ -25,7 +25,7 @@
 
 #include <stdint.h>
 
-#include <crystal_config.h>
+#include <crystal/crystal_config.h>
 
 #ifdef __cplusplus
 extern "C" {

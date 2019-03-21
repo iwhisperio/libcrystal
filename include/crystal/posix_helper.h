@@ -1,12 +1,14 @@
-#ifndef __POSIX_HELPER__
-#define __POSIX_HELPER__
+#ifndef __CRYSTAL_POSIX_HELPER__
+#define __CRYSTAL_POSIX_HELPER__
 
 #include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
 #include <direct.h>
+
+#include <winsock2.h>
 #include <windows.h>
-#include <gettimeofday.h>
+#include <crystal/gettimeofday.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -87,4 +89,4 @@ char *basename(const char *path)
 }
 #endif
 
-#endif /* __POSIX_HELPER__ */
+#endif /* __CRYSTAL_POSIX_HELPER__ */

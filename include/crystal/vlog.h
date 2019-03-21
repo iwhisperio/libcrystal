@@ -20,10 +20,10 @@
  * SOFTWARE.
  */
 
-#ifndef __VLOG_H__
-#define __VLOG_H__
+#ifndef __CRYSTAL_VLOG_H__
+#define __CRYSTAL_VLOG_H__
 
-#include <crystal_config.h>
+#include <crystal/crystal_config.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -103,4 +103,4 @@ void vlogv(int level, const char *format, va_list args);
 }
 #endif
 
-#endif
+#endif /*__CRYSTAL_VLOG_H__*/

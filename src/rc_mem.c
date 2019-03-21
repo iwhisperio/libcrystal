@@ -26,10 +26,10 @@
 #include <assert.h>
 
 #ifdef _MSC_VER
-#include "builtins.h"
+#include "crystal/builtins.h"
 #endif
 
-#include "rc_mem.h"
+#include "crystal/rc_mem.h"
 
 /** Defines a reference-counting memory object */
 struct rc_mem {

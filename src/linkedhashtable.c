@@ -27,12 +27,13 @@
 #include <assert.h>
 #include <pthread.h>
 
-#include "rc_mem.h"
-#include "linkedhashtable.h"
+#include "crystal/rc_mem.h"
+#include "crystal/linkedhashtable.h"
 
 #ifdef _MSC_VER
-#include "builtins.h"
+#include "crystal/builtins.h"
 #endif
+
 
 typedef struct _hash_entry_i
 {

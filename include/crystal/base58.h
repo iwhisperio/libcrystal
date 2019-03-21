@@ -20,12 +20,12 @@
  * SOFTWARE.
  */
 
-#ifndef __BASE58_H__
-#define __BASE58_H__
+#ifndef __CRYSTAL_BASE58_H__
+#define __CRYSTAL_BASE58_H__
 
 #include <stddef.h>
 
-#include <crystal_config.h>
+#include <crystal/crystal_config.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -77,4 +77,4 @@ ssize_t base58_decode(const char *text, size_t textlen, void *data, size_t datal
 }
 #endif
 
-#endif /* __BASE58_H__ */
+#endif /* __CRYSTAL_BASE58_H__ */

@@ -32,7 +32,7 @@
 #include <alloca.h>
 #endif
 
-#include "base58.h"
+#include "crystal/base58.h"
 
 static const char b58digits_ordered[] = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
 static const int8_t b58digits_map[] = {

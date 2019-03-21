@@ -24,8 +24,8 @@
 #include <assert.h>
 #include <pthread.h>
 
-#include "bitset.h"
-#include "ids_heap.h"
+#include "crystal/bitset.h"
+#include "crystal/ids_heap.h"
 
 int ids_heap_init(ids_heap_t *idsheap, int max_index)
 {

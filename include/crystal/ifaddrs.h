@@ -23,10 +23,10 @@
  *	BSDI ifaddrs.h,v 2.5 2000/02/23 14:51:59 dab Exp
  */
 
-#ifndef	_IFADDRS_H_
-#define	_IFADDRS_H_
+#ifndef __CRYSTAL_IFADDRS_H__
+#define __CRYSTAL_IFADDRS_H__
 
-#include "crystal_config.h"
+#include <crystal/crystal_config.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -60,4 +60,4 @@ void freeifaddrs(struct ifaddrs *ifa);
 }
 #endif
 
-#endif
+#endif /* __CRYSTAL_IFADDRS_H__ */

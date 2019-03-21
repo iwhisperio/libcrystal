@@ -20,14 +20,14 @@
  * SOFTWARE.
  */
 
-#ifndef __BITSET_H__
-#define __BITSET_H__
+#ifndef __CRYSTAL_BITSET_H__
+#define __CRYSTAL_BITSET_H__
 
 #include <string.h>
 #include <stdint.h>
 #include <assert.h>
 
-#include <crystal_config.h>
+#include <crystal/crystal_config.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -162,4 +162,4 @@ int bitset_next_clear_bit(bitset_t *set, int from);
 }
 #endif
 
-#endif /* __BITSET_H__ */
+#endif /* __CRYSTAL_BITSET_H__ */

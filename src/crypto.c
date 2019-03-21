@@ -32,8 +32,8 @@
 #include <alloca.h>
 #endif
 
-#include "base58.h"
-#include "crypto.h"
+#include "crystal/base58.h"
+#include "crystal/crypto.h"
 
 #if SHA256_BYTES != crypto_hash_sha256_BYTES
 #error Inappropriate SHA256_BYTES definition.

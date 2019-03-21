@@ -26,6 +26,7 @@
 #include <assert.h>
 
 #if defined (WIN32) || defined(WIN64)
+#include <winsock2.h>
 #include <windows.h>
 #include <time.h>
 #include <limits.h>
@@ -33,7 +34,7 @@
 #include <mach/mach_time.h>
 #endif
 
-#include "time_util.h"
+#include "crystal/time_util.h"
 
 #if defined (_WIN32) || defined(_WIN64)
 uint64_t get_monotonic_time(void)

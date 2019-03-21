@@ -29,8 +29,9 @@ set(SRC
     bitset_test.c)
 
 include_directories(
+    BEFORE
     .
-    ../src
+    ../include
     ${WITH_LIBCUNIT}/include)
 
 link_directories(${WITH_LIBCUNIT}/lib)

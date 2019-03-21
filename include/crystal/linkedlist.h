@@ -20,12 +20,12 @@
  * SOFTWARE.
  */
 
-#ifndef __LINKEDLIST_H__
-#define __LINKEDLIST_H__
+#ifndef __CRYSTAL_LINKEDLIST_H__
+#define __CRYSTAL_LINKEDLIST_H__
 
 #include <pthread.h>
 
-#include <crystal_config.h>
+#include <crystal/crystal_config.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -135,4 +135,4 @@ int list_iterator_remove(list_iterator_t *iterator);
 }
 #endif
 
-#endif
+#endif // __CRYSTAL_LINKEDLIST_H__

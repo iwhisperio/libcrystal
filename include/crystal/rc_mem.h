@@ -20,12 +20,12 @@
  * SOFTWARE.
  */
 
-#ifndef __RC_MEM_H__
-#define __RC_MEM_H__
+#ifndef __CRYSTAL_RC_MEM_H__
+#define __CRYSTAL_RC_MEM_H__
 
 #include <stddef.h>
 
-#include <crystal_config.h>
+#include <crystal/crystal_config.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -120,4 +120,4 @@ unsigned int nrefs(const void *data);
 }
 #endif
 
-#endif /* __RC_MEM_H__ */
+#endif /* __CRYSTAL_RC_MEM_H__ */

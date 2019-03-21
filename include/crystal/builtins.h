@@ -10,6 +10,7 @@
 
 #ifdef _MSC_VER // For Microsoft Visual C/C++ only
 
+#include <winsock2.h>
 #include <windows.h>
 
 #ifdef __cplusplus

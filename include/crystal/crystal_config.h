@@ -20,22 +20,47 @@
  * SOFTWARE.
  */
 
-#ifndef __TIME_UTIL_H__
-#define __TIME_UTIL_H__
+#ifndef __CRYSTAL_CONFIG_H__
+#define __CRYSTAL_CONFIG_H__
 
-#include <stdint.h>
-
-#include <crystal_config.h>
-
-#ifdef __cplusplus
-extern "C" {
+#if defined(CRYSTAL_STATIC)
+  #define CRYSTAL_API
+#elif defined(CRYSTAL_DYNAMIC)
+  #ifdef CRYSTAL_BUILD
+    #if defined(_WIN32) || defined(_WIN64)
+      #define CRYSTAL_API        __declspec(dllexport)
+    #else
+      #define CRYSTAL_API        __attribute__((visibility("default")))
+    #endif
+  #else
+    #if defined(_WIN32) || defined(_WIN64)
+      #define CRYSTAL_API        __declspec(dllimport)
+    #else
+      #define CRYSTAL_API
+    #endif
+  #endif
+#else
+  #define CRYSTAL_API
 #endif
 
-CRYSTAL_API
-uint64_t get_monotonic_time(void);
-
-#ifdef __cplusplus
-}
+#ifdef _MSC_VER
+#define inline   __inline
 #endif
 
-#endif /* __TIME_UTIL_H__ */
+#if defined(_WIN32) || defined(_WIN64)
+#include <crtdefs.h>
+
+typedef ptrdiff_t       ssize_t;
+
+#elif defined(__APPLE__)
+
+#include <sys/types.h>
+
+#endif
+
+#include <assert.h>
+#ifndef static_assert
+#define static_assert(exp, str)
+#endif
+
+#endif /* __CRYSTAL_CONFIG_H__ */

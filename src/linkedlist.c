@@ -25,8 +25,8 @@
 #include <assert.h>
 #include <pthread.h>
 
-#include "rc_mem.h"
-#include "linkedlist.h"
+#include "crystal/rc_mem.h"
+#include "crystal/linkedlist.h"
 
 typedef struct _list_entry_i {
     void *data;

@@ -20,12 +20,13 @@
  * SOFTWARE.
  */
 
-#ifndef __TIMERHEAP_H__
-#define __TIMERHEAP_H__
+#ifndef __CRYSTAL_TIMERHEAP_H__
+#define __CRYSTAL_TIMERHEAP_H__
 
+#include <stdbool.h>
 #include <pthread.h>
 
-#include <crystal_config.h>
+#include <crystal/crystal_config.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -279,5 +280,5 @@ void timer_heap_dump(timer_heap_t *ht);
 }
 #endif
 
-#endif    /* __TIMERHEAP_H__ */
+#endif  /* __CRYSTAL_TIMERHEAP_H__ */
 

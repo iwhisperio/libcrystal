@@ -20,12 +20,12 @@
  * SOFTWARE.
  */
 
-#ifndef __SPOPEN_H__
-#define __SPOPEN_H__
+#ifndef __CRYSTAL_SPOPEN_H__
+#define __CRYSTAL_SPOPEN_H__
 
 #include <stdio.h>
 
-#include <crystal_config.h>
+#include <crystal/crystal_config.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -59,4 +59,4 @@ int spkill(subprocess_t subprocess);
 }
 #endif
 
-#endif /* __SPOPEN_H__ */
+#endif /* __CRYSTAL_SPOPEN_H__ */

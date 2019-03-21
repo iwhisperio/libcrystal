@@ -20,8 +20,8 @@
  * SOFTWARE.
  */
 
-#ifndef __SOCKET_H__
-#define __SOCKET_H__
+#ifndef __CRYSTAL_SOCKET_H__
+#define __CRYSTAL_SOCKET_H__
 
 #if defined(_WIN32) || defined(_WIN64)
 #include <winsock2.h>
@@ -34,7 +34,7 @@
 #include <netdb.h>
 #endif /* defined(_WIN32) || defined(_WIN64) */
 
-#include <crystal_config.h>
+#include <crystal/crystal_config.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -99,4 +99,4 @@ int socket_errno(void);
 }
 #endif
 
-#endif /* __SOCKET_H__ */
+#endif /* __CRYSTAL_SOCKET_H__ */

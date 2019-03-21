@@ -35,13 +35,13 @@
 #endif
 
 #ifndef HAVA_GETTIMEOFDAY
-#include "gettimeofday.h"
+#include "crystal/gettimeofday.h"
 #endif
 
-#include "vlog.h"
-#include "socket.h"
-#include "time_util.h"
-#include "timerheap.h"
+#include "crystal/vlog.h"
+#include "crystal/socket.h"
+#include "crystal/time_util.h"
+#include "crystal/timerheap.h"
 
 #define HEAP_PARENT(X)      (X == 0 ? 0 : (((X) - 1) / 2))
 #define HEAP_LEFT(X)        (((X)+(X))+1)

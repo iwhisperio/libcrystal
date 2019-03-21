@@ -20,13 +20,13 @@
  * SOFTWARE.
  */
 
-#ifndef __IDS_HEAP_H__
-#define __IDS_HEAP_H__
+#ifndef __CRYSTAL_IDS_HEAP_H__
+#define __CRYSTAL_IDS_HEAP_H__
 
 #include <pthread.h>
-#include <bitset.h>
 
-#include <crystal_config.h>
+#include <crystal/crystal_config.h>
+#include <crystal/bitset.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -73,4 +73,4 @@ int ids_heap_free(ids_heap_t *idsheap, int id);
 }
 #endif
 
-#endif /* __BITSET_WRAPPER_H__ */
+#endif /* __CRYSTAL_IDS_HEAP_H__ */

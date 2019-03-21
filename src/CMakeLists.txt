@@ -42,20 +42,20 @@ set(SRC
     spopen.c)
 
 set(HEADERS
-    base58.h
-    bitset.h
-    ids_heap.h
-    linkedhashtable.h
-    linkedlist.h
-    rc_mem.h
-    vlog.h
-    timerheap.h
-    time_util.h
-    socket.h
-    spopen.h
-    crystal_config.h)
+    ../include/crystal/crystal_config.h
+    ../include/crystal/base58.h
+    ../include/crystal/bitset.h
+    ../include/crystal/ids_heap.h
+    ../include/crystal/linkedhashtable.h
+    ../include/crystal/linkedlist.h
+    ../include/crystal/rc_mem.h
+    ../include/crystal/socket.h
+    ../include/crystal/spopen.h
+    ../include/crystal/time_util.h
+    ../include/crystal/timerheap.h
+    ../include/crystal/vlog.h)
 
-include_directories(.)
+include_directories(BEFORE ../include)
 add_definitions(-DCRYSTAL_BUILD)
 
 if(ENABLE_CRYPTO)
@@ -65,19 +65,33 @@ if(ENABLE_CRYPTO)
 
     set(HEADERS
         ${HEADERS}
-        crypto.h)
+        ../include/crystal/crypto.h)
+
+    set(INCLUDE_CRYPTO_H_STRING [=[#include "crystal/crypto.h"]=])
 
     if(NOT "${WITH_LIBSODIUM}" STREQUAL "")
         find_library(SODIUM
             NAMES sodium libsodium
-            HINTS "${WITH_LIBSODIUM}/lib")
-
-        include_directories("${WITH_LIBSODIUM}/include")
+            HINTS "${WITH_LIBSODIUM}/lib"
+            NO_DEFAULT_PATH)
+        find_file(SODIUM_HEADER sodium.h
+            HINTS "${WITH_LIBSODIUM}/include"
+            NO_DEFAULT_PATH)
     else()
         find_library(SODIUM NAMES sodium libsodium)
+        find_file(SODIUM_HEADER sodium.h)
+    endif()
+
+    if("${SODIUM}" STREQUAL SODIUM-NOTFOUND)
+        message(FATAL_ERROR "libsodium library not found")
+    endif()
+    if("${SODIUM_HEADER}" STREQUAL SODIUM_HEADER-NOTFOUND)
+        message(FATAL_ERROR "libsodium header not found")
     endif()
 
     message(STATUS "Found libsodium: ${SODIUM}")
+    get_filename_component(SODIUM_INCLUDE_DIR "${SODIUM_HEADER}" DIRECTORY CACHE)
+    include_directories(BEFORE "${SODIUM_INCLUDE_DIR}")
 
     if(LIBSODIUM_STATIC)
         add_definitions(-DSODIUM_STATIC)
@@ -95,15 +109,15 @@ if(WIN32)
 
     set(HEADERS
         ${HEADERS}
-        windows/gettimeofday.h
-        windows/getopt.h
-        windows/posix_helper.h
-        windows/builtins.h)
+        ../include/crystal/gettimeofday.h
+        ../include/crystal/getopt.h
+        ../include/crystal/posix_helper.h
+        ../include/crystal/builtins.h)
 
-    add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+    add_definitions(-D_CRT_SECURE_NO_WARNINGS -D_CRT_NONSTDC_NO_WARNINGS)
 
-    include_directories(windows ${WITH_PTHREAD}/include)
-    link_directories(${WITH_PTHREAD}/lib)
+    include_directories(BEFORE "${WITH_PTHREAD}/include")
+    link_directories("${WITH_PTHREAD}/lib")
 elseif(ANDROID)
     set(SRC
         ${SRC}
@@ -111,9 +125,7 @@ elseif(ANDROID)
 
     set(HEADERS
         ${HEADERS}
-        android/ifaddrs.h)
-
-    include_directories(android)
+        ../include/crystal/ifaddrs.h)
 endif()
 
 if(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
@@ -165,4 +177,11 @@ if(ENABLE_SHARED)
         LIBRARY DESTINATION "lib")
 endif()
 
-install(FILES ${HEADERS} DESTINATION "include")
+install(FILES ${HEADERS} DESTINATION "include/crystal")
+
+set(CRYSTAL_H "${CMAKE_BINARY_DIR}/include/crystal.h")
+configure_file(
+    ../include/crystal.h.in
+    "${CRYSTAL_H}"
+    @ONLY)
+install(FILES "${CRYSTAL_H}" DESTINATION "include")

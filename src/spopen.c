@@ -28,13 +28,15 @@
 #include <io.h>
 #include <process.h>
 #include <fcntl.h>
+
+#include <winsock2.h>
 #include <windows.h>
 #else
 #include <unistd.h>
 #include <sys/wait.h>
 #endif
 
-#include "spopen.h"
+#include "crystal/spopen.h"
 
 struct _subprocess {
     int sig;

@@ -19,7 +19,7 @@ set(ENABLE_CRYPTO FALSE CACHE BOOL "Enable crypto functions, depends on libsodiu
 set(ENABLE_TESTS TRUE CACHE BOOL "Build test cases")
 set(WITH_LIBCUNIT "${CMAKE_INSTALL_PREFIX}" CACHE PATH  "where to look for cunit")
 set(WITH_LIBSODIUM "${CMAKE_INSTALL_PREFIX}" CACHE PATH "where to look for libsodium")
-set(LIBSODIUM_STATIC FLASE CACHE BOOL "Set to TRUE if libsodium is static library")
+set(LIBSODIUM_STATIC FALSE CACHE BOOL "Set to TRUE if libsodium is static library")
 if(WIN32)
     set(WITH_PTHREAD "${CMAKE_INSTALL_PREFIX}" CACHE PATH "where to look for pthread")
     set(CMAKE_REQUIRED_INCLUDES "${CMAKE_REQUIRED_INCLUDES};${WITH_PTHREAD}/include")

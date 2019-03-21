@@ -20,13 +20,12 @@
  * SOFTWARE.
  */
 
-#ifndef __CRYPTO_H__
-#define __CRYPTO_H__
+#ifndef __CRYSTAL_CRYPTO_H__
+#define __CRYSTAL_CRYPTO_H__
 
 #include <stdint.h>
-#include <sys/types.h>
 
-#include <crystal_config.h>
+#include <crystal/crystal_config.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -168,4 +167,4 @@ int crypto_create_keypair(uint8_t *public_key, uint8_t *secret_key);
 }
 #endif
 
-#endif /* __CRYPTO_H__ */
+#endif /* __CRYSTAL_CRYPTO_H__ */

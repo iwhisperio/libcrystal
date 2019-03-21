@@ -20,13 +20,13 @@
  * SOFTWARE.
  */
 
-#ifndef __LINKED_HASHTABLE_H__
-#define __LINKED_HASHTABLE_H__
+#ifndef __CRYSTAL_LINKED_HASHTABLE_H__
+#define __CRYSTAL_LINKED_HASHTABLE_H__
 
 #include <stdint.h>
 #include <stddef.h>
 
-#include <crystal_config.h>
+#include <crystal/crystal_config.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -90,4 +90,4 @@ int hashtable_iterator_remove(hashtable_iterator_t *iterator);
 }
 #endif
 
-#endif /* __LINKED_HASHTABLE_H__ */
+#endif /* __CRYSTAL_LINKED_HASHTABLE_H__ */

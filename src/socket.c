@@ -43,7 +43,7 @@
 #include <ws2tcpip.h>
 #endif /* WIN32 */
 
-#include "socket.h"
+#include "crystal/socket.h"
 
 #ifdef _MSC_VER
 // For Windows socket API not compatible with POSIX: size_t vs. int

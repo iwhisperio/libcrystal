@@ -50,11 +50,11 @@
  */
 
 #include <errno.h>
-#include <getopt.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
 #include <stdarg.h>
+#include "crystal/getopt.h"
 
 int opterr = 1;         /* if error message should be printed */
 int optind = 1;         /* index into parent argv vector */

@@ -30,12 +30,12 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef _GETOPT_H_
-#define _GETOPT_H_
+#ifndef __CRYSTAL_GETOPT_H__
+#define __CRYSTAL_GETOPT_H__
 
 #include <crtdefs.h>
 
-#include "crystal_config.h"
+#include <crystal/crystal_config.h>
 
 /*
  * GNU-like getopt_long()
@@ -89,4 +89,4 @@ extern int optreset;
 }
 #endif
 
-#endif /* !_GETOPT_H_ */
+#endif /* !__CRYSTAL_GETOPT_H__ */

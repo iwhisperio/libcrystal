@@ -26,7 +26,7 @@
 #include <stdarg.h>
 #include <pthread.h>
 
-#include "vlog.h"
+#include "crystal/vlog.h"
 
 int log_level = VLOG_INFO;
 
@@ -79,6 +79,7 @@ static const char* level_names[] = {
 static pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER;
 
 #if defined(_WIN32) || defined(_WIN64)
+#include <winsock2.h>
 #include <Windows.h>
 
 static HANDLE hConsole = NULL;

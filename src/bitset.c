@@ -24,10 +24,10 @@
 #include <assert.h>
 
 #ifdef _MSC_VER
-#include "builtins.h"
+#include "crystal/builtins.h"
 #endif
 
-#include "bitset.h"
+#include "crystal/bitset.h"
 
 int bitset_prev_set_bit(bitset_t *set, int from)
 {

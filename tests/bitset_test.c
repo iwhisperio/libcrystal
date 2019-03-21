@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <CUnit/Basic.h>
 
-#include <bitset.h>
+#include "crystal/bitset.h"
 
 static void bitset_init_test(void)
 {
