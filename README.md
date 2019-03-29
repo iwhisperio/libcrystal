@@ -99,6 +99,10 @@ $ nmake
 $ nmake install
 ```
 
+With Shorthand, run the command below:
+```shell
+$ DEPSDIR=YOUR-DEPS-PATH ./compile.sh
+```
 
 # Run tests
 
