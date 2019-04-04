@@ -47,15 +47,12 @@
 #define inline   __inline
 #endif
 
+#include <sys/types.h>
+
 #if defined(_WIN32) || defined(_WIN64)
 #include <crtdefs.h>
 
 typedef ptrdiff_t       ssize_t;
-
-#elif defined(__APPLE__)
-
-#include <sys/types.h>
-
 #endif
 
 #include <assert.h>
