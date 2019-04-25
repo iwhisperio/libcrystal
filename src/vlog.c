@@ -158,11 +158,14 @@ static void reset_color(void)
 
 static log_printer *__printer;
 static FILE *__logfile;
+static int __exit_hook_registered;
 
 static void close_log_file(void)
 {
-    if (__logfile)
+    if (__logfile) {
         fclose(__logfile);
+        __logfile = NULL;
+    }
 }
 
 void vlog_init(int level, const char *logfile, log_printer *printer)
@@ -171,11 +174,15 @@ void vlog_init(int level, const char *logfile, log_printer *printer)
     __printer = printer;
 
     if (logfile && *logfile) {
+        if (__logfile)
+            fclose(__logfile);
+
         __logfile = fopen(logfile, "a");
-        if (__logfile) {
-            //setbuf(__logfile, NULL);
-            atexit(close_log_file);
-        }
+    }
+
+    if (!__exit_hook_registered) {
+        __exit_hook_registered = 1;
+        atexit(close_log_file);
     }
 }
 
