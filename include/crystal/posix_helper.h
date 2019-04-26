@@ -94,7 +94,7 @@ char *basename(const char *path)
     if (err)
         return NULL;
 
-    rc = snprintf(base, sizoef(base), "%s%s", fname, ext);
+    rc = snprintf(base, sizeof(base), "%s%s", fname, ext);
     return rc < 0 || rc >= sizeof(base) ? NULL : base;
 }
 
