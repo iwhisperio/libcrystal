@@ -5,6 +5,7 @@
 #include <stdint.h>
 #include <string.h>
 #include <direct.h>
+#include <stdio.h>
 
 #include <winsock2.h>
 #include <windows.h>
@@ -33,6 +34,7 @@ typedef long int        suseconds_t;
 #define X_OK            R_OK
 
 #define PATH_MAX       MAX_PATH
+#define MAXPATHLEN     MAX_PATH
 
 #define mkdir(dir, mode)        _mkdir(dir)
 
@@ -81,8 +83,30 @@ char *realpath(const char *path, char *resolved_path)
 static __inline
 char *basename(const char *path)
 {
-    char *p =  strrchr(path, '\\');
-    return p ?  p + 1 : (char *)path;
+    static char base[_MAX_FNAME + _MAX_EXT];
+    char fname[_MAX_FNAME];
+    char ext[_MAX_EXT];
+    errno_t err;
+    int rc;
+
+    err = _splitpath_s(path, NULL, 0, NULL, 0,
+                       fname, sizeof(fname), ext, sizeof(ext));
+    if (err)
+        return NULL;
+
+    rc = snprintf(base, sizoef(base), "%s%s", fname, ext);
+    return rc < 0 || rc >= sizeof(base) ? NULL : base;
+}
+
+static __inline
+char *dirname(const char *path)
+{
+    static char dir[_MAX_DIR];
+    errno_t rc;
+
+    rc = _splitpath_s(path, NULL, 0, dir, sizeof(dir),
+                      NULL, 0, NULL, 0);
+    return rc ? NULL : dir;
 }
 
 #ifdef __cplusplus
