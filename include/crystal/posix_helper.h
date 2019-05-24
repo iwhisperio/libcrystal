@@ -83,13 +83,26 @@ char *realpath(const char *path, char *resolved_path)
 static __inline
 char *basename(const char *path)
 {
-    static char base[_MAX_FNAME + _MAX_EXT];
-    char fname[_MAX_FNAME];
-    char ext[_MAX_EXT];
+    static char base[_MAX_FNAME + _MAX_EXT + 1];
+    char fpath[_MAX_DIR + _MAX_FNAME + _MAX_EXT + 1];
+    char fname[_MAX_FNAME + 1];
+    char ext[_MAX_EXT + 1];
     errno_t err;
     int rc;
+    size_t len;
 
-    err = _splitpath_s(path, NULL, 0, NULL, 0,
+    if(!path)
+      return ".";
+
+    len = strlen(path);
+    if (len >= sizeof(fpath))
+      return NULL;
+
+    memcpy(fpath, path, len+1);
+    if ( len > 1 && ( path[len-1] == '/' || path[len-1] == '\\') )
+      fpath[len-1] = '\0';
+
+    err = _splitpath_s(fpath, NULL, 0, NULL, 0,
                        fname, sizeof(fname), ext, sizeof(ext));
     if (err)
         return NULL;
@@ -101,10 +114,23 @@ char *basename(const char *path)
 static __inline
 char *dirname(const char *path)
 {
-    static char dir[_MAX_DIR];
+    static char dir[_MAX_DIR + 1];
+    char fpath[_MAX_DIR + _MAX_FNAME + _MAX_EXT + 1];
+    size_t len;
     errno_t rc;
 
-    rc = _splitpath_s(path, NULL, 0, dir, sizeof(dir),
+    if(!path)
+      return ".";
+
+    len = strlen(path);
+    if (len >= sizeof(fpath))
+      return NULL;
+
+    memcpy(fpath, path, len+1);
+    if ( len > 1 && ( path[len-1] == '/' || path[len-1] == '\\') )
+      fpath[len-1] = '\0';
+
+    rc = _splitpath_s(fpath, NULL, 0, dir, sizeof(dir),
                       NULL, 0, NULL, 0);
     return rc ? NULL : dir;
 }
