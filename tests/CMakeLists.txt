@@ -24,9 +24,14 @@ if(HAVE_SIGHUP)
     add_definitions(-DHAVE_SIGHUP=1)
 endif()
 
+if(ENABLE_CRYPTO)
+    add_definitions(-DENABLE_CRYPTO=1)
+endif()
+
 set(SRC
     tests.c
-    bitset_test.c)
+    bitset_test.c
+    base58_test.c)
 
 include_directories(
     BEFORE
