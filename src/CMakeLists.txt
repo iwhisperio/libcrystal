@@ -29,6 +29,8 @@ if(NOT HAVE_PTHREAD_H)
 endif()
 
 set(SRC
+    BR/BRBase58.c
+    BR/BRCrypto.c
     base58.c
     bitset.c
     ids_heap.c
@@ -55,7 +57,7 @@ set(HEADERS
     ../include/crystal/timerheap.h
     ../include/crystal/vlog.h)
 
-include_directories(BEFORE ../include)
+include_directories(BEFORE ../include BR)
 add_definitions(-DCRYSTAL_BUILD)
 
 if(ENABLE_CRYPTO)
