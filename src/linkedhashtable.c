@@ -204,28 +204,24 @@ static void hashtable_clear_i(hashtable_t *htab)
     htab->mod_count++;
 }
 
-static void hashtable_destroy(void *htab)
+static void hashtable_destroy(void *obj)
 {
-    int synced;
-    pthread_rwlock_t lock;
+    hashtable_t *htab = (hashtable_t *)obj;
+
+    assert(htab);
 
     if (!htab)
         return;
 
-    synced = ((hashtable_t *)htab)->synced;
-
-    if (synced) {
-        lock = ((hashtable_t *)htab)->lock;
-        if (pthread_rwlock_wrlock(&lock) != 0)
-            return;
-    }
+    if (htab->synced &&
+        pthread_rwlock_wrlock(&htab->lock) != 0) // TODO: Check necessity.
+        return;
 
     hashtable_clear_i(htab);
-    memset(htab, 0, sizeof(hashtable_t));
 
-    if (synced) {
-        pthread_rwlock_unlock(&lock);
-        pthread_rwlock_destroy(&lock);
+    if (htab->synced) {
+        pthread_rwlock_unlock(&htab->lock);
+        pthread_rwlock_destroy(&htab->lock);
     }
 }
 
