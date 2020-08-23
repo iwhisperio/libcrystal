@@ -262,6 +262,7 @@ void *list_get(list_t *lst, int index)
 size_t list_size(list_t *lst)
 {
     assert(lst);
+
     if (!lst) {
         errno = EINVAL;
         return 0;
@@ -303,28 +304,24 @@ void list_clear(list_t *lst)
     list_unlock(lst);
 }
 
-static void list_destroy(void *lst)
+static void list_destroy(void *obj)
 {
-    int synced;
-    pthread_rwlock_t lock;
+    list_t *lst = (list_t *)obj;
+
+    assert(lst);
 
     if (!lst)
         return;
 
-    synced = ((list_t *)lst)->synced;
+    if (lst->synced &&
+        pthread_rwlock_wrlock(&lst->lock) != 0) // TODO: Check necessity.
+        return;
 
-    if (synced) {
-        lock = ((list_t *)lst)->lock;
-        if (pthread_rwlock_wrlock(&lock) != 0)
-            return;
-    }
+    list_clear_i(lst);
 
-    list_clear_i((list_t *)lst);
-    memset(lst, 0, sizeof(list_t));
-
-    if (synced) {
-        pthread_rwlock_unlock(&lock);
-        pthread_rwlock_destroy(&lock);
+    if (lst->synced) {
+        pthread_rwlock_unlock(&lst->lock);
+        pthread_rwlock_destroy(&lst->lock);
     }
 }
 
