@@ -99,6 +99,12 @@ void vlog(int level, const char *format, ...);
 CRYSTAL_API
 void vlogv(int level, const char *format, va_list args);
 
+CRYSTAL_API
+void vlog_long(int level, const char *format, ...);
+
+CRYSTAL_API
+void vlogv_long(int level, const char *format, va_list args);
+
 #ifdef __cplusplus
 }
 #endif

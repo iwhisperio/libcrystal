@@ -28,6 +28,8 @@ if(NOT HAVE_PTHREAD_H)
         "slim-pthread or pthreads-win32 are recommended.")
 endif()
 
+set(CMAKE_C_STANDARD 99)
+
 set(SRC
     BR/BRBase58.c
     BR/BRCrypto.c

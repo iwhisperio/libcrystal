@@ -25,6 +25,7 @@
 #include <time.h>
 #include <stdarg.h>
 #include <pthread.h>
+#include <stddef.h>
 
 #include "crystal/vlog.h"
 
@@ -215,15 +216,15 @@ void output(int level, const char *format, ...)
 
 void vlogv(int level, const char *format, va_list args)
 {
+    char timestr[20];
+    char buf[1024];
+    time_t cur = time(NULL);
+
     if (level > log_level)
         return;
 
     if (level > VLOG_VERBOSE)
         level = VLOG_VERBOSE;
-
-    char timestr[20];
-    char buf[1024];
-    time_t cur = time(NULL);
 
     strftime(timestr, 20, TIME_FORMAT, localtime(&cur));
     vsnprintf(buf, sizeof(buf), format, args);
@@ -236,8 +237,58 @@ void vlogv(int level, const char *format, va_list args)
 void vlog(int level, const char *format, ...)
 {
     va_list args;
+
     va_start(args, format);
     vlogv(level, format, args);
+    va_end(args);
+}
+
+void vlogv_long(int level, const char *format, va_list args)
+{
+    char timestr[20];
+    char *buf;
+    time_t cur = time(NULL);
+
+    va_list _args;
+    int _len;
+
+    if (level > log_level)
+        return;
+
+    if (level > VLOG_VERBOSE)
+        level = VLOG_VERBOSE;
+
+    va_copy(_args, args);
+    _len = vsnprintf(NULL, 0, format, _args) + 1;
+    va_end(_args);
+
+    if (_len <= 0)
+        return;
+
+    if (_len > 1024)
+        buf = (char *)calloc(1, _len);
+    else
+        buf = (char *)alloca(_len);
+
+    if (!buf)
+        return;
+
+    strftime(timestr, 20, TIME_FORMAT, localtime(&cur));
+    vsnprintf(buf, _len, format, args);
+
+    output(level, "%s - %-7s : %s\n",
+            timestr, level_names[level], buf);
+
+    if (_len > 1024)
+        free(buf);
+}
+
+void vlog_long(int level, const char *format, ...)
+{
+    va_list args;
+
+    va_start(args, format);
+    vlogv_long(level, format, args);
     va_end(args);
 }
 
