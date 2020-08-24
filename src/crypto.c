@@ -164,29 +164,49 @@ void crypto_compute_symmetric_key(const uint8_t *public_key,
 #pragma GCC diagnostic pop
 #endif
 
+#define ALLOCA_MAXSZ (2*1024)
+
 ssize_t crypto_encrypt(const uint8_t *key, const uint8_t *nonce,
                        const uint8_t *plain, size_t length, uint8_t *encrypted)
 {
     uint8_t *_plain;
     uint8_t *_encrypted;
+    size_t totalsz;
 
     if (length == 0 || !key || !nonce || !plain || !encrypted)
         return -1;
 
-    _plain = (uint8_t *)alloca(length + crypto_box_ZEROBYTES);
-    _encrypted = (uint8_t *)alloca(length + crypto_box_MACBYTES + crypto_box_BOXZEROBYTES);
+    totalsz = length + crypto_box_ZEROBYTES +
+              length + crypto_box_MACBYTES  + crypto_box_BOXZEROBYTES;
+
+    if (length > ALLOCA_MAXSZ)
+        _plain = (uint8_t *)calloc(1, totalsz);
+    else
+        _plain = (uint8_t *)alloca(totalsz);
+
+    if (!_plain)
+        return -1;
+
+    _encrypted = _plain + length + crypto_box_ZEROBYTES;
 
     // Pad the plain with 32 zero bytes.
     memset(_plain, 0, crypto_box_ZEROBYTES);
     memcpy(_plain + crypto_box_ZEROBYTES, plain, length);
 
     if (crypto_box_afternm(_encrypted, _plain, length + crypto_box_ZEROBYTES,
-                           nonce, key) != 0)
+                           nonce, key) != 0) {
+        if (length > ALLOCA_MAXSZ)
+            free(_plain);
         return -1;
+    }
 
     /* Unpad the encrypted message. */
     memcpy(encrypted, _encrypted + crypto_box_BOXZEROBYTES,
            length + crypto_box_MACBYTES);
+
+    if (length > ALLOCA_MAXSZ)
+        free(_plain);
+
     return length + crypto_box_MACBYTES;
 }
 
@@ -210,23 +230,41 @@ ssize_t crypto_decrypt(const uint8_t *key, const uint8_t *nonce,
 {
     uint8_t *_plain;
     uint8_t *_encrypted;
+    size_t totalsz;
 
     if (length <= crypto_box_MACBYTES || !key || !nonce
         || !encrypted || !plain)
         return -1;
 
-    _plain = (uint8_t *)alloca(length + crypto_box_ZEROBYTES);
-    _encrypted = (uint8_t *)alloca(length + crypto_box_BOXZEROBYTES);
+    totalsz = length + crypto_box_ZEROBYTES +
+              length + crypto_box_BOXZEROBYTES;
+
+    if (length > ALLOCA_MAXSZ)
+        _plain = (uint8_t *)calloc(1, totalsz);
+    else
+        _plain = (uint8_t *)alloca(totalsz);
+
+    if (!_plain)
+        return -1;
+
+    _encrypted = _plain + length + crypto_box_ZEROBYTES;
 
     // Pad the encrypted message with 16 zero bytes.
     memset(_encrypted, 0, crypto_box_BOXZEROBYTES);
     memcpy(_encrypted + crypto_box_BOXZEROBYTES, encrypted, length);
 
     if (crypto_box_open_afternm(_plain, _encrypted,
-                        length + crypto_box_BOXZEROBYTES, nonce, key) != 0)
+                        length + crypto_box_BOXZEROBYTES, nonce, key) != 0) {
+        if (length > ALLOCA_MAXSZ)
+            free(_plain);
         return -1;
+    }
 
     memcpy(plain, _plain + crypto_box_ZEROBYTES, length - crypto_box_MACBYTES);
+
+    if (length > ALLOCA_MAXSZ)
+        free(_plain);
+
     return length - crypto_box_MACBYTES;
 }
 
