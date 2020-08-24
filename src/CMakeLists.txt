@@ -31,7 +31,6 @@ endif()
 set(SRC
     BR/BRBase58.c
     BR/BRCrypto.c
-    base58.c
     bitset.c
     ids_heap.c
     linkedhashtable.c
@@ -45,7 +44,6 @@ set(SRC
 
 set(HEADERS
     ../include/crystal/crystal_config.h
-    ../include/crystal/base58.h
     ../include/crystal/bitset.h
     ../include/crystal/ids_heap.h
     ../include/crystal/linkedhashtable.h
@@ -58,6 +56,18 @@ set(HEADERS
     ../include/crystal/vlog.h)
 
 include_directories(BEFORE ../include BR)
+
+if(ENABLE_BASE58)
+    set(SRC
+        ${SRC}
+        base58.c)
+    set(HEADERS
+        ${HEADERS}
+        ../include/crystal/base58.h)
+
+    set(INCLUDE_BASE58_H_STRING [=[#include <crystal/base58.h>]=])
+endif()
+
 add_definitions(-DCRYSTAL_BUILD)
 
 if(ENABLE_CRYPTO)
@@ -107,14 +117,16 @@ if(WIN32)
     set(SRC
         ${SRC}
         windows/gettimeofday.c
-        windows/getopt_long.c)
+        windows/getopt_long.c
+        windows/strptime.c)
 
     set(HEADERS
         ${HEADERS}
         ../include/crystal/gettimeofday.h
         ../include/crystal/getopt.h
         ../include/crystal/posix_helper.h
-        ../include/crystal/builtins.h)
+        ../include/crystal/builtins.h
+        ../include/crystal/strptime.h)
 
     add_definitions(-D_CRT_SECURE_NO_WARNINGS -D_CRT_NONSTDC_NO_WARNINGS)
 

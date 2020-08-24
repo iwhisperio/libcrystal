@@ -20,8 +20,8 @@
  * SOFTWARE.
  */
 
-#ifndef __GETTIMEOFDAY_H__
-#define __GETTIMEOFDAY_H__
+#ifndef __CRYSTAL_GETTIMEOFDAY_H__
+#define __CRYSTAL_GETTIMEOFDAY_H__
 
 #include <stdint.h>
 
@@ -46,4 +46,4 @@ int gettimeofday(struct timeval *tv, struct timezone *tz);
 }
 #endif
 
-#endif /* __GETTIMEOFDAY_H__ */
+#endif /* __CRYSTAL_GETTIMEOFDAY_H__ */
