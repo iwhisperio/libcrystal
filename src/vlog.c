@@ -28,6 +28,7 @@
 #include <stddef.h>
 
 #include "crystal/vlog.h"
+#include "crystal/posix_helper.h"
 
 int log_level = VLOG_INFO;
 

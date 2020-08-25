@@ -26,17 +26,18 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
-#include <direct.h>
 #include <stdio.h>
-#include <malloc.h>
-
-#include <winsock2.h>
-#include <windows.h>
-#include <sys/utime.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+#if defined(_WIN32) || defined(_WIN64)
+#include <malloc.h>
+#include <direct.h>
+#include <winsock2.h>
+#include <windows.h>
+#include <sys/utime.h>
 
 typedef uint32_t        mode_t;
 
@@ -63,6 +64,7 @@ typedef long int        suseconds_t;
 #define rmdir(dir)              _rmdir(dir)
 #define getcwd(buf, size)       _getcwd(buf, size)
 
+#undef alloca
 #define alloca(size)            _alloca(size)
 
 #define fsync(fd)               _commit(fd)
@@ -163,6 +165,7 @@ char *dirname(const char *path)
                       NULL, 0, NULL, 0);
     return rc ? NULL : dir;
 }
+#endif
 
 #ifdef __cplusplus
 }
