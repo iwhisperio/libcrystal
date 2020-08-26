@@ -27,6 +27,7 @@
 #include <stdint.h>
 #include <string.h>
 #include <stdio.h>
+#include <time.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -83,6 +84,7 @@ typedef long int        suseconds_t;
 #define utimbuf                _utimbuf
 #define utime(file, times)     _utime(file, times)
 #define gmtime_r(a, b)         gmtime_s(b, a)
+#define timegm(tm)             _mkgmtime(tm)
 
 #define timeradd(a, b, result)                                                \
   do {                                                                        \
