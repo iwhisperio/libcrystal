@@ -101,7 +101,7 @@ static int first_wday_of(int year)
         (isleap(year) ? 6 : 0) + 1) % 7;
 }
 
-char *_strptime(const char *buf, const char *fmt, struct tm *tm)
+char *strptime(const char *buf, const char *fmt, struct tm *tm)
 {
     unsigned char c;
     const unsigned char *bp;
