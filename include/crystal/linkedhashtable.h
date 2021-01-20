@@ -32,59 +32,59 @@
 extern "C" {
 #endif
 
-typedef struct _hashtable_t hashtable_t;
+typedef struct _linked_hashtable_t linked_hashtable_t;
 
-typedef struct _hash_entry_t
+typedef struct _linked_hash_entry_t
 {
     const void *        key;
     size_t              keylen;
     void *              data;
     char                __opaque[sizeof(void *) * 4];
-} hash_entry_t;
+} linked_hash_entry_t;
 
-typedef struct hashtable_iterator_t {
+typedef struct linked_hashtable_iterator_t {
     char __opaque[sizeof(void *) * 4];
-} hashtable_iterator_t;
+} linked_hashtable_iterator_t;
 
 CRYSTAL_API
-hashtable_t *hashtable_create(size_t capacity, int synced,
-          uint32_t (*hash_code)(const void *key, size_t len),
-          int (*key_compare)(const void *key1, size_t len1,
-                             const void *key2, size_t len2));
+linked_hashtable_t *linked_hashtable_create(size_t capacity, int synced,
+                                            uint32_t (*hash_code)(const void *key, size_t len),
+                                            int (*key_compare)(const void *key1, size_t len1,
+                                                               const void *key2, size_t len2));
 
 CRYSTAL_API
-void *hashtable_put(hashtable_t *htab, hash_entry_t *entry);
+void *linked_hashtable_put(linked_hashtable_t *htab, linked_hash_entry_t *entry);
 
 CRYSTAL_API
-void *hashtable_get(hashtable_t *htab, const void *key, size_t keylen);
+void *linked_hashtable_get(linked_hashtable_t *htab, const void *key, size_t keylen);
 
 CRYSTAL_API
-int hashtable_exist(hashtable_t *htab, const void *key, size_t keylen);
+int linked_hashtable_exist(linked_hashtable_t *htab, const void *key, size_t keylen);
 
 CRYSTAL_API
-int hashtable_is_empty(hashtable_t *htab);
+int linked_hashtable_is_empty(linked_hashtable_t *htab);
 
 CRYSTAL_API
-void *hashtable_remove(hashtable_t *htab, const void *key, size_t keylen);
+void *linked_hashtable_remove(linked_hashtable_t *htab, const void *key, size_t keylen);
 
 CRYSTAL_API
-void hashtable_clear(hashtable_t *htab);
+void linked_hashtable_clear(linked_hashtable_t *htab);
 
 CRYSTAL_API
-hashtable_iterator_t *hashtable_iterate(hashtable_t *htab,
-                                        hashtable_iterator_t *iterator);
+linked_hashtable_iterator_t *linked_hashtable_iterate(linked_hashtable_t *htab,
+                                                      linked_hashtable_iterator_t *iterator);
 
 // return 1 on success, 0 end of iterator, -1 on modified conflict or error.
 CRYSTAL_API
-int hashtable_iterator_next(hashtable_iterator_t *iterator, void **key,
-                              size_t *keylen, void **data);
+int linked_hashtable_iterator_next(linked_hashtable_iterator_t *iterator, void **key,
+                                   size_t *keylen, void **data);
 
 CRYSTAL_API
-int hashtable_iterator_has_next(hashtable_iterator_t *iterator);
+int linked_hashtable_iterator_has_next(linked_hashtable_iterator_t *iterator);
 
 // return 1 on success, 0 nothing removed, -1 on modified conflict or error.
 CRYSTAL_API
-int hashtable_iterator_remove(hashtable_iterator_t *iterator);
+int linked_hashtable_iterator_remove(linked_hashtable_iterator_t *iterator);
 
 #ifdef __cplusplus
 }

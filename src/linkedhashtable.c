@@ -47,18 +47,18 @@ typedef struct _hash_entry_i
 } hash_entry_i;
 
 typedef struct hashtable_iterator_i {
-    hashtable_t *htab;
+    linked_hashtable_t *htab;
     hash_entry_i *current;
     hash_entry_i *next;
     int expected_mod_count;
 } hashtable_iterator_i;
 
-static_assert(sizeof(hash_entry_t) >= sizeof(hash_entry_i),
+static_assert(sizeof(linked_hash_entry_t) >= sizeof(hash_entry_i),
               "List entry size miss match.");
-static_assert(sizeof(hashtable_iterator_t) >= sizeof(hashtable_iterator_i),
+static_assert(sizeof(linked_hashtable_iterator_t) >= sizeof(hashtable_iterator_i),
               "List iterator size miss match.");
 
-struct _hashtable_t {
+struct _linked_hashtable_t {
     size_t      capacity;
     size_t      count;
     int         mod_count;
@@ -110,17 +110,17 @@ static size_t bucket_size(size_t capacity)
     return BUCKET_SIZES[msb];
 }
 
-hashtable_t *hashtable_create(size_t capacity, int synced,
-          uint32_t (*hash_code)(const void *key, size_t len),
-          int (*key_compare)(const void *key1, size_t len1,
+linked_hashtable_t *linked_hashtable_create(size_t capacity, int synced,
+                                            uint32_t (*hash_code)(const void *key, size_t len),
+                                            int (*key_compare)(const void *key1, size_t len1,
                              const void *key2, size_t len2))
 {
-    hashtable_t *htab;
+    linked_hashtable_t *htab;
 
     capacity = bucket_size(capacity ? capacity : 127);
 
-    htab = (hashtable_t *)rc_zalloc(sizeof(hashtable_t)
-                + sizeof(hash_entry_i *) * capacity, hashtable_destroy);
+    htab = (linked_hashtable_t *)rc_zalloc(sizeof(linked_hashtable_t)
+                                           + sizeof(hash_entry_i *) * capacity, hashtable_destroy);
     if (!htab) {
         errno = ENOMEM;
         return NULL;
@@ -152,7 +152,7 @@ hashtable_t *hashtable_create(size_t capacity, int synced,
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #endif
 
-static inline void hashtable_rlock(hashtable_t *htab)
+static inline void hashtable_rlock(linked_hashtable_t *htab)
 {
     if (htab->synced) {
         int rc = pthread_rwlock_rdlock(&htab->lock);
@@ -160,7 +160,7 @@ static inline void hashtable_rlock(hashtable_t *htab)
     }
 }
 
-static inline void hashtable_wlock(hashtable_t *htab)
+static inline void hashtable_wlock(linked_hashtable_t *htab)
 {
     if (htab->synced) {
         int rc = pthread_rwlock_wrlock(&htab->lock);
@@ -172,14 +172,14 @@ static inline void hashtable_wlock(hashtable_t *htab)
 #pragma GCC diagnostic pop
 #endif
 
-static inline void hashtable_unlock(hashtable_t *htab)
+static inline void hashtable_unlock(linked_hashtable_t *htab)
 {
     if (htab->synced) {
         pthread_rwlock_unlock(&htab->lock);
     }
 }
 
-static void hashtable_clear_i(hashtable_t *htab)
+static void hashtable_clear_i(linked_hashtable_t *htab)
 {
     hash_entry_i *entry;
     hash_entry_i *cur;
@@ -206,7 +206,7 @@ static void hashtable_clear_i(hashtable_t *htab)
 
 static void hashtable_destroy(void *obj)
 {
-    hashtable_t *htab = (hashtable_t *)obj;
+    linked_hashtable_t *htab = (linked_hashtable_t *)obj;
 
     assert(htab);
 
@@ -225,7 +225,7 @@ static void hashtable_destroy(void *obj)
     }
 }
 
-static void hashtable_add(hashtable_t *htab, hash_entry_t *entry)
+static void hashtable_add(linked_hashtable_t *htab, linked_hash_entry_t *entry)
 {
     hash_entry_i *ent = (hash_entry_i *)entry;
     int idx;
@@ -248,8 +248,8 @@ static void hashtable_add(hashtable_t *htab, hash_entry_t *entry)
     htab->count++;
 }
 
-static hash_entry_i **hashtable_get_entry(hashtable_t *htab,
-                                      const void *key, size_t keylen)
+static hash_entry_i **hashtable_get_entry(linked_hashtable_t *htab,
+                                          const void *key, size_t keylen)
 {
     hash_entry_i **entry;
     int idx;
@@ -270,7 +270,7 @@ static hash_entry_i **hashtable_get_entry(hashtable_t *htab,
     return NULL;
 }
 
-void *hashtable_put(hashtable_t *htab, hash_entry_t *entry)
+void *linked_hashtable_put(linked_hashtable_t *htab, linked_hash_entry_t *entry)
 {
     hash_entry_i **ent;
     hash_entry_i *new_entry = (hash_entry_i *)entry;
@@ -308,7 +308,7 @@ void *hashtable_put(hashtable_t *htab, hash_entry_t *entry)
     return entry->data;
 }
 
-void *hashtable_get(hashtable_t *htab, const void *key, size_t keylen)
+void *linked_hashtable_get(linked_hashtable_t *htab, const void *key, size_t keylen)
 {
     hash_entry_i **entry;
     void *val;
@@ -330,7 +330,7 @@ void *hashtable_get(hashtable_t *htab, const void *key, size_t keylen)
 
 }
 
-int hashtable_exist(hashtable_t *htab, const void *key, size_t keylen)
+int linked_hashtable_exist(linked_hashtable_t *htab, const void *key, size_t keylen)
 {
     int exist;
 
@@ -347,7 +347,7 @@ int hashtable_exist(hashtable_t *htab, const void *key, size_t keylen)
     return exist;
 }
 
-int hashtable_is_empty(hashtable_t *htab)
+int linked_hashtable_is_empty(linked_hashtable_t *htab)
 {
     assert(htab);
     if (!htab) {
@@ -358,7 +358,7 @@ int hashtable_is_empty(hashtable_t *htab)
     return htab->count == 0;
 }
 
-static void *hashtable_remove_nolock(hashtable_t *htab, const void *key, size_t keylen)
+static void *hashtable_remove_nolock(linked_hashtable_t *htab, const void *key, size_t keylen)
 {
     hash_entry_i **entry;
     hash_entry_i *to_remove;
@@ -384,7 +384,7 @@ static void *hashtable_remove_nolock(hashtable_t *htab, const void *key, size_t 
     return val;
 }
 
-void *hashtable_remove(hashtable_t *htab, const void *key, size_t keylen)
+void *linked_hashtable_remove(linked_hashtable_t *htab, const void *key, size_t keylen)
 {
     void *val = NULL;
 
@@ -401,7 +401,7 @@ void *hashtable_remove(hashtable_t *htab, const void *key, size_t keylen)
     return val;
 }
 
-void hashtable_clear(hashtable_t *htab)
+void linked_hashtable_clear(linked_hashtable_t *htab)
 {
     assert(htab);
     if (!htab) {
@@ -414,8 +414,8 @@ void hashtable_clear(hashtable_t *htab)
     hashtable_unlock(htab);
 }
 
-hashtable_iterator_t *hashtable_iterate(hashtable_t *htab,
-                                        hashtable_iterator_t *iterator)
+linked_hashtable_iterator_t *linked_hashtable_iterate(linked_hashtable_t *htab,
+                                                      linked_hashtable_iterator_t *iterator)
 {
     hashtable_iterator_i *it = (hashtable_iterator_i *)iterator;
 
@@ -438,8 +438,8 @@ hashtable_iterator_t *hashtable_iterate(hashtable_t *htab,
 }
 
 // return 1 on success, 0 end of iterator, -1 on modified conflict or error.
-int hashtable_iterator_next(hashtable_iterator_t *iterator, void **key,
-                              size_t *keylen, void **data)
+int linked_hashtable_iterator_next(linked_hashtable_iterator_t *iterator, void **key,
+                                   size_t *keylen, void **data)
 {
     int rc;
     hashtable_iterator_i *it = (hashtable_iterator_i *)iterator;
@@ -479,7 +479,7 @@ int hashtable_iterator_next(hashtable_iterator_t *iterator, void **key,
     return rc;
 }
 
-int hashtable_iterator_has_next(hashtable_iterator_t *iterator)
+int linked_hashtable_iterator_has_next(linked_hashtable_iterator_t *iterator)
 {
     hashtable_iterator_i *it = (hashtable_iterator_i *)iterator;
 
@@ -493,7 +493,7 @@ int hashtable_iterator_has_next(hashtable_iterator_t *iterator)
 }
 
 // return 1 on success, 0 nothing removed, -1 on modified conflict or error.
-int hashtable_iterator_remove(hashtable_iterator_t *iterator)
+int linked_hashtable_iterator_remove(linked_hashtable_iterator_t *iterator)
 {
     void *ptr;
     hashtable_iterator_i *it = (hashtable_iterator_i *)iterator;

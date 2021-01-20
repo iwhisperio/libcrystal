@@ -35,15 +35,15 @@ typedef struct _list_entry_i {
 } list_entry_i;
 
 typedef struct list_iterator_i {
-    list_t   *lst;
+    linked_list_t   *lst;
     list_entry_i *current;
     list_entry_i *next;
     int expected_mod_count;
 } list_iterator_i;
 
-static_assert(sizeof(list_entry_t) >= sizeof(list_entry_i),
+static_assert(sizeof(linked_list_entry_t) >= sizeof(list_entry_i),
               "List entry size miss match.");
-static_assert(sizeof(list_iterator_t) >= sizeof(list_iterator_i),
+static_assert(sizeof(linked_list_iterator_t) >= sizeof(list_iterator_i),
               "List iterator size miss match.");
 
 struct _linked_list_t {
@@ -51,17 +51,17 @@ struct _linked_list_t {
     int mod_count;
     int synced;
     pthread_rwlock_t lock;
-    int (*compare)(list_entry_t *entry1, list_entry_t *entry2);
+    int (*compare)(linked_list_entry_t *entry1, linked_list_entry_t *entry2);
 
     list_entry_i head;
 };
 
 static void list_destroy(void *lst);
 
-list_t *list_create(int synced,
-        int (*compare)(list_entry_t *entry1, list_entry_t *entry2))
+linked_list_t *linked_list_create(int synced,
+                                  int (*compare)(linked_list_entry_t *entry1, linked_list_entry_t *entry2))
 {
-    list_t *lst = (list_t *)rc_zalloc(sizeof(list_t), list_destroy);
+    linked_list_t *lst = (linked_list_t *)rc_zalloc(sizeof(linked_list_t), list_destroy);
     if (lst == NULL) {
         errno = ENOMEM;
         return NULL;
@@ -82,7 +82,7 @@ list_t *list_create(int synced,
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #endif
 
-static inline void list_rlock(list_t *lst)
+static inline void list_rlock(linked_list_t *lst)
 {
     if (lst->synced) {
         int rc = pthread_rwlock_rdlock(&lst->lock);
@@ -90,7 +90,7 @@ static inline void list_rlock(list_t *lst)
     }
 }
 
-static inline void list_wlock(list_t *lst)
+static inline void list_wlock(linked_list_t *lst)
 {
     if (lst->synced) {
         int rc = pthread_rwlock_wrlock(&lst->lock);
@@ -102,14 +102,14 @@ static inline void list_wlock(list_t *lst)
 #pragma GCC diagnostic pop
 #endif
 
-static inline void list_unlock(list_t *lst)
+static inline void list_unlock(linked_list_t *lst)
 {
     if (lst->synced) {
         pthread_rwlock_unlock(&lst->lock);
     }
 }
 
-int list_insert(list_t *lst, int index, list_entry_t *entry)
+int linked_list_insert(linked_list_t *lst, int index, linked_list_entry_t *entry)
 {
     list_entry_i *cur;
     list_entry_i *ent = (list_entry_i *)entry;
@@ -146,7 +146,7 @@ int list_insert(list_t *lst, int index, list_entry_t *entry)
     return 1;
 }
 
-static void *list_remove_entry_nolock(list_t *lst, list_entry_t *entry)
+static void *list_remove_entry_nolock(linked_list_t *lst, linked_list_entry_t *entry)
 {
     void *val;
     list_entry_i *ent = (list_entry_i *)entry;
@@ -166,7 +166,7 @@ static void *list_remove_entry_nolock(list_t *lst, list_entry_t *entry)
     return val;
 }
 
-void *list_remove_entry(list_t *lst, list_entry_t *entry)
+void *linked_list_remove_entry(linked_list_t *lst, linked_list_entry_t *entry)
 {
     void *val;
     list_entry_i *ent = (list_entry_i *)entry;
@@ -190,7 +190,7 @@ void *list_remove_entry(list_t *lst, list_entry_t *entry)
     return val;
 }
 
-void *list_remove(list_t *lst, int index)
+void *linked_list_remove(linked_list_t *lst, int index)
 {
     void *val;
     list_entry_i *ent;
@@ -229,7 +229,7 @@ void *list_remove(list_t *lst, int index)
     return val;
 }
 
-void *list_get(list_t *lst, int index)
+void *linked_list_get(linked_list_t *lst, int index)
 {
     void *val;
     list_entry_i *ent;
@@ -259,7 +259,7 @@ void *list_get(list_t *lst, int index)
     return val;
 }
 
-size_t list_size(list_t *lst)
+size_t linked_list_size(linked_list_t *lst)
 {
     assert(lst);
 
@@ -271,7 +271,7 @@ size_t list_size(list_t *lst)
     return lst->size;
 }
 
-static void list_clear_i(list_t *lst)
+static void list_clear_i(linked_list_t *lst)
 {
     list_entry_i *ent;
     list_entry_i *cur;
@@ -291,7 +291,7 @@ static void list_clear_i(list_t *lst)
     lst->mod_count++;
 }
 
-void list_clear(list_t *lst)
+void linked_list_clear(linked_list_t *lst)
 {
     assert(lst);
     if (!lst) {
@@ -306,7 +306,7 @@ void list_clear(list_t *lst)
 
 static void list_destroy(void *obj)
 {
-    list_t *lst = (list_t *)obj;
+    linked_list_t *lst = (linked_list_t *)obj;
 
     assert(lst);
 
@@ -325,7 +325,7 @@ static void list_destroy(void *obj)
     }
 }
 
-int list_find(list_t *lst, list_entry_t *entry)
+int linked_list_find(linked_list_t *lst, linked_list_entry_t *entry)
 {
     int index;
     list_entry_i *ent;
@@ -340,7 +340,7 @@ int list_find(list_t *lst, list_entry_t *entry)
 
     for (ent = lst->head.next, index = 0; index < (int)lst->size;
             ent = ent->next, index++) {
-        if (lst->compare ? (lst->compare((list_entry_t *)ent, entry) == 0)
+        if (lst->compare ? (lst->compare((linked_list_entry_t *)ent, entry) == 0)
                          : (ent->data == entry->data)) {
             break;
         }
@@ -354,7 +354,7 @@ int list_find(list_t *lst, list_entry_t *entry)
     return index;
 }
 
-list_iterator_t *list_iterate(list_t *lst, list_iterator_t *iterator)
+linked_list_iterator_t *linked_list_iterate(linked_list_t *lst, linked_list_iterator_t *iterator)
 {
     list_iterator_i *it = (list_iterator_i *)iterator;
 
@@ -377,7 +377,7 @@ list_iterator_t *list_iterate(list_t *lst, list_iterator_t *iterator)
 }
 
 // return 1 on success, 0 end of iterator, -1 on modified conflict or error.
-int list_iterator_next(list_iterator_t *iterator, void **data)
+int linked_list_iterator_next(linked_list_iterator_t *iterator, void **data)
 {
     int rc;
     list_iterator_i *it = (list_iterator_i *)iterator;
@@ -412,7 +412,7 @@ int list_iterator_next(list_iterator_t *iterator, void **data)
     return rc;
 }
 
-int list_iterator_has_next(list_iterator_t *iterator)
+int linked_list_iterator_has_next(linked_list_iterator_t *iterator)
 {
     list_iterator_i *it = (list_iterator_i *)iterator;
 
@@ -426,7 +426,7 @@ int list_iterator_has_next(list_iterator_t *iterator)
 }
 
 // return 1 on success, 0 nothing removed, -1 on modified conflict or error.
-int list_iterator_remove(list_iterator_t *iterator)
+int linked_list_iterator_remove(linked_list_iterator_t *iterator)
 {
     void *ptr;
     list_iterator_i *it = (list_iterator_i *)iterator;
@@ -445,7 +445,7 @@ int list_iterator_remove(list_iterator_t *iterator)
         return -1;
     }
 
-    ptr = list_remove_entry_nolock(it->lst, (list_entry_t *)it->current);
+    ptr = list_remove_entry_nolock(it->lst, (linked_list_entry_t *)it->current);
     if (ptr) {
         deref(ptr);
         it->current = NULL;
